@@ -1,3 +1,60 @@
+// =============================================
+//         FUNÇÕES DA TELA DE LOGIN
+// =============================================
+
+// Mostra uma página específica dentro da tela de login
+function showLoginPage(pageId) {
+  // Esconde todas as páginas do login
+  document.querySelectorAll('.login-page').forEach(page => {
+    page.classList.remove('visible');
+    setTimeout(() => {
+      page.style.display = 'none';
+    }, 600);
+  });
+
+  // Mostra a página desejada
+  const target = document.getElementById('login-' + pageId);
+  if (target) {
+    target.style.display = 'block';
+    setTimeout(() => {
+      target.classList.add('visible');
+    }, 50);
+  }
+}
+
+// Simula o processo de login e libera o site
+function simulateLogin(type) {
+  const cgmInput = document.getElementById(type === 'student' ? 'student-cgm' : 'resp-cgm');
+  const phoneInput = document.getElementById(type === 'student' ? 'student-phone' : 'resp-phone');
+
+  const cgm = cgmInput ? cgmInput.value.trim() : '';
+  const phone = phoneInput ? phoneInput.value.trim() : '';
+
+  if (!cgm || !phone) {
+    alert('Por favor, preencha CGM/CPF e Celular para continuar.');
+    return;
+  }
+
+  // Simulação de envio de código
+  alert(`Código de segurança enviado para o celular ${phone}!\n\n(Em ambiente real, um SMS seria enviado)`);
+
+  // Após 1.5 segundos, "loga" e mostra o site
+  setTimeout(() => {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-content').classList.remove('hidden');
+    document.getElementById('main-content').style.display = 'block';
+
+    // Scroll suave para o topo (opcional)
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    console.log('Usuário logado com sucesso. Site liberado.');
+  }, 1500);
+}
+
+// =============================================
+//         CÓDIGO ORIGINAL QUE VOCÊ ENVIOU
+// =============================================
+
 // Tema dark/light
 const themeToggle = document.getElementById('theme-toggle');
 const themeIcon = document.getElementById('theme-icon');
@@ -31,7 +88,6 @@ const modalBody = document.getElementById('modal-body');
 const closeModal = document.getElementById('close-modal');
 
 const cards = document.querySelectorAll('.card');
-
 cards.forEach(card => {
   card.addEventListener('click', () => {
     const modalType = card.getAttribute('data-modal');
@@ -79,14 +135,18 @@ const galleryImages = [
   'https://picsum.photos/id/29/600/400',
   'https://picsum.photos/id/180/600/400',
 ];
+if (gallery) {
+  gallery.innerHTML = galleryImages.map(src => `<img src="${src}" alt="Infraestrutura">`).join('');
+}
 
-gallery.innerHTML = galleryImages.map(src => `<img src="${src}" alt="Infraestrutura">`).join('');
-
-// Formulário fake
-document.getElementById('form-matricula').addEventListener('submit', (e) => {
-  e.preventDefault();
-  alert('✅ Solicitação de matrícula enviada com sucesso!\nNossa equipe entrará em contato em breve.');
-});
+// Formulário fake de matrícula
+const formMatricula = document.getElementById('form-matricula');
+if (formMatricula) {
+  formMatricula.addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('✅ Solicitação de matrícula enviada com sucesso!\nNossa equipe entrará em contato em breve.');
+  });
+}
 
 // Smooth scroll para links âncora
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -97,9 +157,25 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       target.scrollIntoView({ behavior: 'smooth' });
     }
     // Fecha menu mobile se aberto
-    mobileMenu.classList.remove('active');
-    menuIcon.classList.replace('fa-times', 'fa-bars');
+    if (mobileMenu) {
+      mobileMenu.classList.remove('active');
+      if (menuIcon) {
+        menuIcon.classList.replace('fa-times', 'fa-bars');
+      }
+    }
   });
 });
 
-console.log("Site Colégio São Cristóvão carregado com sucesso!");
+// Inicia o site com a tela de login visível
+document.addEventListener('DOMContentLoaded', () => {
+  // Mostra a tela inicial do login
+  showLoginPage('home');
+  
+  // Garante que o conteúdo principal fique escondido no início
+  const mainContent = document.getElementById('main-content');
+  if (mainContent) {
+    mainContent.style.display = 'none';
+  }
+
+  console.log("Site Colégio São Cristóvão carregado com sucesso! Tela de login ativa.");
+});
